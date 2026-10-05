@@ -26,7 +26,7 @@ npm start
 
 `npm start` requiere ejecutar `npm run build` primero.
 
-Las comprobaciones de lint, TypeScript y build pasan. La auditoría de producción no reporta vulnerabilidades; hay avisos en dependencias de desarrollo documentados en las decisiones técnicas.
+Las comprobaciones de lint, TypeScript y build pasan. La auditoría de producción no reporta vulnerabilidades; hay cinco avisos de severidad alta en dependencias de desarrollo de ESLint. No se aplicó la corrección forzada que propone bajar la configuración a Next.js 14.
 
 ## Stack y estructura
 
@@ -38,8 +38,6 @@ src/
   components/ui/       # Componentes compartidos
   data/mocks/          # Datos ficticios locales
   types/               # Modelos de negocio, servicios y staff
-docs/
-  technical-decisions.md
 ```
 
 Rutas previstas: `/business/onboarding` y `/booking`; se agregarán con sus flujos.
@@ -56,7 +54,11 @@ La adaptación a escritorio acompañará el diseño para celular. Vercel es opci
 
 ## Decisiones y uso de IA
 
-Consulta [las decisiones técnicas](docs/technical-decisions.md) para conocer la estructura, la UI y los límites de esta etapa. La IA asistió en la inicialización y documentación. La revisión manual por el candidato sigue pendiente.
+Las carpetas separan rutas, componentes, modelos y mocks para localizar cada responsabilidad con facilidad. CSS Modules mantiene los estilos de cada componente separados; las variables globales unifican colores y estilos base. La portada y el layout son Server Components porque no necesitan interacción. Los formularios usarán Client Components al implementar los flujos.
+
+El documento de trabajo de decisiones se mantiene fuera del repositorio, en `D:\Code\Projects\Pik\technical-decisions.md`. El README concentra la documentación del proyecto que se entregará en GitHub.
+
+La IA asistió en la inicialización y documentación. La revisión manual por el candidato sigue pendiente.
 
 ## Segunda versión
 
