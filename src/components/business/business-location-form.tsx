@@ -24,6 +24,13 @@ export function BusinessLocationForm({
   onBack,
 }: BusinessLocationFormProps) {
   const [error, setError] = useState("");
+  const [city, setCity] = useState(initialValues.city);
+  const [address, setAddress] = useState(initialValues.address);
+
+  const canContinue =
+    cities.includes(city) &&
+    address.trim().length >= 5 &&
+    address.trim().length <= 200;
   const [openingHours, setOpeningHours] = useState(() =>
     initialValues.openingHours.length > 0
       ? initialValues.openingHours
@@ -145,7 +152,10 @@ export function BusinessLocationForm({
         <CitySelect
           initialValue={initialValues.city}
           options={cities}
-          onValueChange={() => setError("")}
+          onValueChange={(value) => {
+            setCity(value);
+            setError("");
+          }}
         />
       </div>
 
@@ -155,7 +165,8 @@ export function BusinessLocationForm({
           id="business-address"
           name="address"
           type="text"
-          defaultValue={initialValues.address}
+          value={address}
+          onChange={(event) => setAddress(event.currentTarget.value)}
           autoComplete="street-address"
           placeholder="Calle, número y colonia"
           required
@@ -205,7 +216,11 @@ export function BusinessLocationForm({
               Atrás
             </button>
 
-            <button className={styles.nextButton} type="submit">
+            <button
+              className={styles.nextButton}
+              type="submit"
+              disabled={!canContinue}
+            >
               Siguiente
             </button>
           </div>

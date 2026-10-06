@@ -110,7 +110,11 @@ export function BusinessCategoriesForm({
                         Atrás
                     </button>
 
-                    <button className={styles.nextButton} type="submit">
+                    <button
+                        className={styles.nextButton}
+                        type="submit"
+                        disabled={values.length === 0}
+                    >
                         Siguiente
                     </button>
                 </div>

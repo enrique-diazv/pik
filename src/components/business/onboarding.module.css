@@ -140,13 +140,13 @@
   padding: 12px 24px;
   color: #ffffff;
   background: var(--onboarding-accent);
-  border: 0;
+  border: 2px solid var(--onboarding-accent);
   border-radius: 999px;
   font-weight: 700;
   cursor: pointer;
 }
 
-.nextButton:hover {
+.nextButton:not(:disabled):hover {
   background: var(--onboarding-accent);
 }
 
@@ -587,6 +587,31 @@
 }
 
 .nextButton:disabled {
-  opacity: 0.6;
+  color: var(--onboarding-accent);
+  background: transparent;
+  border-color: var(--onboarding-accent);
+  opacity: 1;
   cursor: not-allowed;
+}
+
+.serviceList {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.serviceCard {
+  display: grid;
+  gap: 8px;
+  padding: 16px 20px;
+  background: #ffffff;
+  border: 1px solid #d9d9d9;
+  border-radius: 20px;
+}
+
+.serviceCard span {
+  color: var(--muted);
+  font-size: 0.875rem;
 }

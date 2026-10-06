@@ -15,6 +15,14 @@ export function BusinessDetailsForm({
 }: BusinessDetailsFormProps) {
   const [error, setError] = useState("");
 
+  const [name, setName] = useState(initialValues.name);
+  const [phone, setPhone] = useState(initialValues.phone);
+
+  const canContinue =
+    name.trim().length >= 2 &&
+    name.trim().length <= 80 &&
+    /^[0-9]{10}$/.test(phone);
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -50,7 +58,8 @@ export function BusinessDetailsForm({
           id="business-name"
           name="name"
           type="text"
-          defaultValue={initialValues.name}
+          value={name}
+          onChange={(event) => setName(event.currentTarget.value)}
           placeholder="Ej. Casa Naranja"
           autoComplete="organization"
           required
@@ -65,7 +74,8 @@ export function BusinessDetailsForm({
           id="business-phone"
           name="phone"
           type="tel"
-          defaultValue={initialValues.phone}
+          value={phone}
+          onChange={(event) => setPhone(event.currentTarget.value)}
           inputMode="numeric"
           autoComplete="tel-national"
           placeholder="5512345678"
@@ -98,7 +108,11 @@ export function BusinessDetailsForm({
 
       <footer className={styles.footer}>
         <div className={styles.footerContent}>
-          <button className={styles.nextButton} type="submit">
+          <button
+            className={styles.nextButton}
+            type="submit"
+            disabled={!canContinue}
+          >
             Siguiente
           </button>
         </div>
