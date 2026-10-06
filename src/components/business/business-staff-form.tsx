@@ -1,9 +1,13 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import type { Service, StaffMember } from "@/types/business";
 import styles from "./onboarding.module.css";
-import { IconlyDelete } from "./schedule-icons";
+import {
+  IconlyDelete,
+  IconlyEdit,
+  IconlyInfomenu,
+} from "./schedule-icons";
 
 interface BusinessStaffFormProps {
   services: Service[];
@@ -23,12 +27,49 @@ export function BusinessStaffForm({
   const [name, setName] = useState("");
   const [serviceIds, setServiceIds] = useState<string[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [openActionsId, setOpenActionsId] = useState<string | null>(null);
+  const swipeStart = useRef<{
+    pointerId: number;
+    personId: string;
+    x: number;
+    y: number;
+  } | null>(null);
   const trimmedName = name.trim();
   const canAdd =
     trimmedName.length >= 2 &&
     trimmedName.length <= 80 &&
     serviceIds.length > 0 &&
     serviceIds.every((id) => services.some((service) => service.id === id));
+  const canContinue =
+    values.length > 0 &&
+    values.every(
+      (person) =>
+        person.serviceIds.length > 0 &&
+        person.serviceIds.every((id) =>
+          services.some((service) => service.id === id)
+        )
+    );
+
+  useEffect(() => {
+    function closeActions(event: PointerEvent) {
+      const target = event.target;
+
+      if (
+        target instanceof Element &&
+        target.closest("[data-card-controls]")
+      ) {
+        return;
+      }
+
+      setOpenActionsId(null);
+    }
+
+    document.addEventListener("pointerdown", closeActions);
+
+    return () => {
+      document.removeEventListener("pointerdown", closeActions);
+    };
+  }, []);
 
   function toggleService(id: string) {
     setServiceIds((current) =>
@@ -144,38 +185,135 @@ export function BusinessStaffForm({
       {values.length > 0 && (
         <ul className={styles.serviceList} aria-label="Personas agregadas">
           {values.map((person) => (
-            <li key={person.id} className={styles.serviceCard}>
-              <div className={styles.staffCardHeading}>
+            <li
+              key={person.id}
+              className={`${styles.serviceCard} ${styles.swipeCard}`}
+              onPointerDown={(event) => {
+                if (
+                  editingId !== null ||
+                  !event.isPrimary ||
+                  event.button !== 0 ||
+                  (event.target instanceof Element &&
+                    event.target.closest("button"))
+                ) {
+                  return;
+                }
+
+                swipeStart.current = {
+                  pointerId: event.pointerId,
+                  personId: person.id,
+                  x: event.clientX,
+                  y: event.clientY,
+                };
+
+                event.currentTarget.setPointerCapture(event.pointerId);
+              }}
+              onPointerMove={(event) => {
+                const start = swipeStart.current;
+
+                if (
+                  !start ||
+                  start.pointerId !== event.pointerId ||
+                  start.personId !== person.id ||
+                  editingId !== null
+                ) {
+                  return;
+                }
+
+                const distanceX = event.clientX - start.x;
+                const distanceY = event.clientY - start.y;
+
+                if (
+                  Math.abs(distanceX) < 30 ||
+                  Math.abs(distanceX) <= Math.abs(distanceY) * 1.5
+                ) {
+                  return;
+                }
+
+                if (distanceX < 0) {
+                  setOpenActionsId(person.id);
+                } else {
+                  setOpenActionsId((current) =>
+                    current === person.id ? null : current
+                  );
+                }
+
+                swipeStart.current = null;
+              }}
+              onPointerUp={() => {
+                swipeStart.current = null;
+              }}
+              onPointerCancel={() => {
+                swipeStart.current = null;
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") {
+                  setOpenActionsId(null);
+                }
+              }}
+            >
+              <div
+                className={styles.cardContent}
+                data-actions-open={openActionsId === person.id}
+              >
                 <strong>{person.name}</strong>
 
+                <span>
+                  {services
+                    .filter((service) => person.serviceIds.includes(service.id))
+                    .map((service) => service.name)
+                    .join(", ")}
+                </span>
+              </div>
+
+              <button
+                className={styles.cardMenuButton}
+                data-card-controls="true"
+                type="button"
+                aria-label={`Opciones de ${person.name}`}
+                aria-expanded={openActionsId === person.id}
+                aria-controls={`actions-${person.id}`}
+                hidden={openActionsId === person.id}
+                disabled={editingId !== null}
+                onClick={() => setOpenActionsId(person.id)}
+              >
+                <IconlyInfomenu size={28} />
+              </button>
+
+              <div
+                id={`actions-${person.id}`}
+                className={styles.cardActions}
+                data-card-controls="true"
+                role="group"
+                aria-label={`Acciones de ${person.name}`}
+                hidden={openActionsId !== person.id}
+              >
                 <button
-                  className={styles.editHoursButton}
+                  className={styles.cardEditButton}
                   type="button"
                   aria-label={`Editar a ${person.name}`}
                   onClick={() => {
+                    setOpenActionsId(null);
                     setEditingId(person.id);
                     setName(person.name);
                     setServiceIds([...person.serviceIds]);
                   }}
                 >
-                  Editar
+                  <IconlyEdit size={22} />
                 </button>
 
                 <button
-                  className={styles.deleteRangeButton}
+                  className={styles.cardDeleteButton}
                   type="button"
                   aria-label={`Eliminar a ${person.name}`}
-                  onClick={() => removePerson(person.id)}
+                  onClick={() => {
+                    setOpenActionsId(null);
+                    removePerson(person.id);
+                  }}
                 >
-                  <IconlyDelete />
+                  <IconlyDelete size={24} />
                 </button>
               </div>
-              <span>
-                {services
-                  .filter((service) => person.serviceIds.includes(service.id))
-                  .map((service) => service.name)
-                  .join(", ")}
-              </span>
             </li>
           ))}
         </ul>
@@ -195,9 +333,9 @@ export function BusinessStaffForm({
             <button
               className={styles.nextButton}
               type="button"
-              disabled={values.length === 0}
+              disabled={!canContinue}
               onClick={() => {
-                if (values.length > 0) {
+                if (canContinue) {
                   onContinue();
                 }
               }}

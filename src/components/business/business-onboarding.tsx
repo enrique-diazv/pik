@@ -86,6 +86,18 @@ export function BusinessOnboarding() {
     setStep("services");
   }
 
+  function handleServicesChange(nextServices: Service[]) {
+    const validIds = new Set(nextServices.map((service) => service.id));
+
+    setServices(nextServices);
+    setStaff((current) =>
+      current.map((person) => ({
+        ...person,
+        serviceIds: person.serviceIds.filter((id) => validIds.has(id)),
+      }))
+    );
+  }
+
   return (
     <div className={styles.page}>
       <main className={styles.main}>
@@ -149,7 +161,7 @@ export function BusinessOnboarding() {
         {step === "services" && (
           <BusinessServicesForm
             values={services}
-            onChange={setServices}
+            onChange={handleServicesChange}
             onContinue={() => setStep("staff")}
             onBack={() => setStep("location")}
           />

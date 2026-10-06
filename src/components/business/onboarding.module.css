@@ -212,14 +212,14 @@
   text-align: left;
 }
 
-.categoryOption input:checked + span {
+.categoryOption input:checked+span {
   color: #30343b;
   background: #fff0e8;
   border-color: var(--onboarding-accent);
   font-weight: 700;
 }
 
-.categoryOption input[type="checkbox"] + span::before {
+.categoryOption input[type="checkbox"]+span::before {
   content: "";
   flex-shrink: 0;
   width: 26px;
@@ -229,12 +229,12 @@
   border-radius: 50%;
 }
 
-.categoryOption input[type="checkbox"]:checked + span::before {
+.categoryOption input[type="checkbox"]:checked+span::before {
   background: var(--onboarding-accent);
   border-color: var(--onboarding-accent);
 }
 
-.categoryOption input[type="checkbox"]:checked + span::after {
+.categoryOption input[type="checkbox"]:checked+span::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -246,7 +246,7 @@
   transform: translateY(-60%) rotate(45deg);
 }
 
-.categoryOption input:focus-visible + span {
+.categoryOption input:focus-visible+span {
   outline: 3px solid var(--accent);
   outline-offset: 3px;
 }
@@ -667,3 +667,117 @@
   min-width: 0;
 }
 
+.swipeCard {
+  position: relative;
+  min-height: 128px;
+  padding: 24px 84px 24px 20px;
+  align-content: center;
+  gap: 12px;
+  touch-action: pan-y pinch-zoom;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.swipeCard strong,
+.swipeCard>span {
+  overflow-wrap: anywhere;
+}
+
+.cardMenuButton {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: #626262;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.cardMenuButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cardActions {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 1;
+  visibility: visible;
+  transform: translate(0, -50%);
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 180ms ease,
+    visibility 0ms;
+}
+
+.cardMenuButton[hidden] {
+  display: none;
+}
+
+.cardActions[hidden] {
+  display: flex;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(18px, -50%);
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 180ms ease,
+    visibility 0ms 220ms;
+}
+
+.cardEditButton,
+.cardDeleteButton {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: #242424;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.cardEditButton {
+  background: #ffe477;
+}
+
+.cardDeleteButton {
+  background: #ff4b55;
+}
+
+.cardContent {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  transform: translateX(0);
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cardContent[data-actions-open="true"] {
+  transform: translateX(-12px);
+}
+
+.cardContent>span {
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cardContent,
+  .cardActions,
+  .cardActions[hidden] {
+    transition: none;
+  }
+}

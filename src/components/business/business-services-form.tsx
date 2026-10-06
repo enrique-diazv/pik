@@ -4,6 +4,13 @@ import styles from "./onboarding.module.css";
 import { useState, type FormEvent } from "react";
 import type { Service } from "@/types/business";
 import { validateServiceDraft } from "@/lib/service-validation";
+import { useCardActions } from "./use-card-actions";
+import {
+  IconlyDelete,
+  IconlyEdit,
+  IconlyInfomenu,
+} from "./schedule-icons";
+
 const durationOptions = [15, 20, 30, 45, 60, 120];
 
 interface BusinessServicesFormProps {
@@ -24,6 +31,14 @@ export function BusinessServicesForm({
   const [duration, setDuration] = useState<number | null>(45);
   const [customDuration, setCustomDuration] = useState("");
   const [error, setError] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const {
+    openId,
+    setOpenId,
+    startSwipe,
+    moveSwipe,
+    endSwipe,
+  } = useCardActions(editingId !== null);
   const canAddService =
     validateServiceDraft({
       name,
@@ -73,20 +88,32 @@ export function BusinessServicesForm({
     }
 
     const newService: Service = {
-      id: `service-${serviceNumber}`,
+      id: editingId ?? `service-${serviceNumber}`,
       name,
       durationMinutes,
       priceMxn,
     };
 
-    onChange([...values, newService]);
+    onChange(
+      editingId === null
+        ? [...values, newService]
+        : values.map((service) =>
+          service.id === editingId ? newService : service
+        )
+    );
 
     form.reset();
+    resetDraft();
+  }
+
+  function resetDraft() {
     setName("");
     setPrice("");
     setDuration(45);
     setCustomDuration("");
     setError("");
+    setEditingId(null);
+    setOpenId(null);
   }
   return (
     <form
@@ -189,26 +216,116 @@ export function BusinessServicesForm({
         className={`${styles.nextButton} ${styles.formActionButton}`}
         disabled={!canAddService}
       >
-        Agregar
+        {editingId === null ? "Agregar" : "Guardar"}
       </button>
+
+      {editingId !== null && (
+        <button
+          type="button"
+          className={`${styles.backButton} ${styles.formActionButton}`}
+          onClick={resetDraft}
+        >
+          Cancelar
+        </button>
+      )}
 
       {values.length > 0 && (
         <ul className={styles.serviceList} aria-label="Servicios agregados">
           {values.map((service) => (
-            <li key={service.id} className={styles.serviceCard}>
-              <strong>{service.name}</strong>
+            <li
+              key={service.id}
+              className={`${styles.serviceCard} ${styles.swipeCard}`}
+              onPointerDown={(event) => startSwipe(service.id, event)}
+              onPointerMove={moveSwipe}
+              onPointerUp={endSwipe}
+              onPointerCancel={endSwipe}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") {
+                  setOpenId(null);
+                }
+              }}
+            >
+              <div
+                className={styles.cardContent}
+                data-actions-open={openId === service.id}
+              >
+                <strong>{service.name}</strong>
 
-              <span>
-                {service.durationMinutes} min
-                {" · "}
-                ${service.priceMxn.toFixed(2)} MXN
-              </span>
+                <span>
+                  {service.durationMinutes % 60 === 0
+                    ? `${service.durationMinutes / 60} h`
+                    : `${service.durationMinutes} min`}
+                  {" · "}
+                  ${service.priceMxn.toFixed(2)} MXN
+                </span>
+              </div>
+
+              <button
+                className={styles.cardMenuButton}
+                data-card-controls="true"
+                type="button"
+                aria-label={`Opciones de ${service.name}`}
+                aria-expanded={openId === service.id}
+                aria-controls={`actions-${service.id}`}
+                hidden={openId === service.id}
+                disabled={editingId !== null}
+                onClick={() => setOpenId(service.id)}
+              >
+                <IconlyInfomenu size={28} />
+              </button>
+
+              <div
+                id={`actions-${service.id}`}
+                className={styles.cardActions}
+                data-card-controls="true"
+                role="group"
+                aria-label={`Acciones de ${service.name}`}
+                hidden={openId !== service.id}
+              >
+                <button
+                  className={styles.cardEditButton}
+                  type="button"
+                  aria-label={`Editar ${service.name}`}
+                  onClick={() => {
+                    setOpenId(null);
+                    setEditingId(service.id);
+                    setName(service.name);
+                    setPrice(String(service.priceMxn));
+                    setError("");
+
+                    if (durationOptions.includes(service.durationMinutes)) {
+                      setDuration(service.durationMinutes);
+                      setCustomDuration("");
+                    } else {
+                      setDuration(null);
+                      setCustomDuration(String(service.durationMinutes));
+                    }
+                  }}
+                >
+                  <IconlyEdit size={22} />
+                </button>
+
+                <button
+                  className={styles.cardDeleteButton}
+                  type="button"
+                  aria-label={`Eliminar ${service.name}`}
+                  onClick={() => {
+                    setOpenId(null);
+                    onChange(
+                      values.filter((value) => value.id !== service.id)
+                    );
+                  }}
+                >
+                  <IconlyDelete size={24} />
+                </button>
+
+              </div>
             </li>
           ))}
         </ul>
       )}
 
-      <footer className={styles.footer}>
+      <footer className={styles.footer} hidden={editingId !== null}>
         <div className={`${styles.footerContent} ${styles.footerWithBack}`}>
           <button
             className={styles.backButton}
