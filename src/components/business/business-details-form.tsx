@@ -1,13 +1,18 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import type { Business } from "@/types/business";
+import type { BusinessDetails } from "@/types/business";
 import styles from "./onboarding.module.css";
 
-type BusinessDetails = Pick<Business, "name" | "phone" | "description">;
+interface BusinessDetailsFormProps {
+  initialValues: BusinessDetails;
+  onContinue: (values: BusinessDetails) => void;
+}
 
-export function BusinessDetailsForm() {
-  const [savedDetails, setSavedDetails] = useState<BusinessDetails | null>(null);
+export function BusinessDetailsForm({
+  initialValues,
+  onContinue,
+}: BusinessDetailsFormProps) {
   const [error, setError] = useState("");
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -30,19 +35,14 @@ export function BusinessDetailsForm() {
     }
 
     setError("");
-    setSavedDetails({ name, phone, description });
-  }
-
-  function handleChange() {
-    setError("");
-    setSavedDetails(null);
+    onContinue({ name, phone, description });
   }
 
   return (
     <form
       className={styles.form}
       onSubmit={handleSubmit}
-      onChange={handleChange}
+      onChange={() => setError("")}
     >
       <div className={styles.field}>
         <label htmlFor="business-name">Nombre del negocio</label>
@@ -50,6 +50,7 @@ export function BusinessDetailsForm() {
           id="business-name"
           name="name"
           type="text"
+          defaultValue={initialValues.name}
           placeholder="Ej. Casa Naranja"
           autoComplete="organization"
           required
@@ -64,6 +65,7 @@ export function BusinessDetailsForm() {
           id="business-phone"
           name="phone"
           type="tel"
+          defaultValue={initialValues.phone}
           inputMode="numeric"
           autoComplete="tel-national"
           placeholder="5512345678"
@@ -81,6 +83,7 @@ export function BusinessDetailsForm() {
         <textarea
           id="business-description"
           name="description"
+          defaultValue={initialValues.description}
           placeholder="Cuéntanos de tu negocio"
           maxLength={1000}
           rows={6}
@@ -90,12 +93,6 @@ export function BusinessDetailsForm() {
       {error && (
         <p className={styles.error} role="alert">
           {error}
-        </p>
-      )}
-
-      {savedDetails && (
-        <p className={styles.success} role="status">
-          Datos de {savedDetails.name} listos para continuar.
         </p>
       )}
 

@@ -1,4 +1,11 @@
-export type BusinessCategory = "salon" | "barbershop" | "spa" | "nails";
+export type BusinessCategory =
+  | "salon"
+  | "barbershop"
+  | "spa"
+  | "nails"
+  | "massage"
+  | "podiatry"
+  | "physiotherapy";
 
 export interface Service {
   id: string;
@@ -24,7 +31,7 @@ export interface OpeningHours {
 export interface Business {
   id: string;
   name: string;
-  category: BusinessCategory;
+  categories: BusinessCategory[];
   phone: string;
   address: string;
   description: string;
@@ -32,3 +39,8 @@ export interface Business {
   services: Service[];
   staff: StaffMember[];
 }
+
+export type BusinessDetails = Pick<
+  Business,
+  "name" | "phone" | "description"
+>;

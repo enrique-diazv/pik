@@ -4,7 +4,7 @@ import type { Business } from "@/types/business";
 export const mockBusiness: Business = {
   id: "salon-demo",
   name: "Casa Naranja",
-  category: "salon",
+  categories: ["salon"],
   phone: "5500000000",
   address: "Calle Ejemplo 123, Monterrey, Nuevo León",
   description: "Un espacio para cuidar de ti, a tu ritmo.",

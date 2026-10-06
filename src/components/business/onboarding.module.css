@@ -1,5 +1,5 @@
 .page {
-  --onboarding-background: #f2efef;
+  --onboarding-background: var(--background);
   --onboarding-accent: #ff702a;
 
   min-height: 100dvh;
@@ -153,4 +153,92 @@
   .page {
     padding-top: 56px;
   }
+}
+
+.stepTitle:focus {
+  outline: none;
+}
+
+.categoryFieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.categoryFieldset legend {
+  margin-bottom: 20px;
+  padding: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.categoryList {
+  display: grid;
+  gap: 12px;
+}
+
+.categoryOption {
+  position: relative;
+  cursor: pointer;
+}
+
+.categoryOption input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.categoryOption span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 12px 16px;
+  color: #4b4b4b;
+  background: #e0e0e0;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.categoryOption input:checked + span {
+  color: #ffffff;
+  background: #bd3b00;
+}
+
+.categoryOption input:focus-visible + span {
+  outline: 3px solid #b9420c;
+  outline-offset: 3px;
+}
+
+.footerWithBack {
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.backButton {
+  min-height: 48px;
+  padding: 12px 24px;
+  color: #4b4b4b;
+  background: #e0e0e0;
+  border: 0;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.backButton:hover {
+  background: #d2d2d2;
+}
+
+.backButton:focus-visible {
+  outline: 3px solid #b9420c;
+  outline-offset: 3px;
+}
+
+.footerWithBack > button {
+  flex: 1;
+  min-width: 0;
+  max-width: 160px;
 }

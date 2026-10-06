@@ -1,5 +1,5 @@
 :root {
-  --background: #fff9f5;
+  --background: #f2efef;
   --surface: #ffffff;
   --foreground: #242424;
   --muted: #626262;
@@ -8,6 +8,9 @@
   color-scheme: light;
 }
 * { box-sizing: border-box; }
+html {
+  background: var(--background);
+}
 html, body { margin: 0; padding: 0; min-height: 100%; }
 body {
   background: var(--background);
