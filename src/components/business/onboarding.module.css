@@ -781,3 +781,45 @@
     transition: none;
   }
 }
+
+.summary {
+  gap: 24px;
+}
+
+.summaryHeading {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.summary .serviceCard {
+  gap: 14px;
+  padding: 18px 20px;
+  border-radius: 22px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.summary .serviceCard > p {
+  font-weight: 700;
+}
+
+.summaryDetails {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 14px 12px;
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.summaryDetails dt {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.summaryDetails dd {
+  margin: 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}

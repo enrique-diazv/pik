@@ -15,7 +15,7 @@ const cities = [
 interface BusinessLocationFormProps {
   initialValues: BusinessLocation;
   onContinue: (values: BusinessLocation) => void;
-  onBack: () => void;
+  onBack: (values: BusinessLocation) => void;
 }
 
 export function BusinessLocationForm({
@@ -211,7 +211,14 @@ export function BusinessLocationForm({
             <button
               className={styles.backButton}
               type="button"
-              onClick={onBack}
+              onClick={() =>
+                onBack({
+                  ...initialValues,
+                  city,
+                  address,
+                  openingHours,
+                })
+              }
             >
               Atrás
             </button>

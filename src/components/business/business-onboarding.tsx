@@ -15,6 +15,7 @@ import { BusinessLocationForm } from "./business-location-form";
 import styles from "./onboarding.module.css";
 import { BusinessServicesForm } from "./business-services-form";
 import { BusinessStaffForm } from "./business-staff-form";
+import { BusinessSummary } from "./business-summary";
 
 type Step =
   | "details"
@@ -112,26 +113,28 @@ export function BusinessOnboarding() {
             {title}
           </h2>
 
-          <div
-            className={styles.progress}
-            role="progressbar"
-            aria-label="Progreso del registro"
-            aria-valuemin={1}
-            aria-valuemax={5}
-            aria-valuenow={currentStep}
-            aria-valuetext={`Paso ${currentStep} de 5: ${title}`}
-          >
-            {[1, 2, 3, 4, 5].map((number) => (
-              <span
-                key={number}
-                className={
-                  number <= currentStep
-                    ? styles.activeSegment
-                    : undefined
-                }
-              />
-            ))}
-          </div>
+          {step !== "summary" && (
+            <div
+              className={styles.progress}
+              role="progressbar"
+              aria-label="Progreso del registro"
+              aria-valuemin={1}
+              aria-valuemax={5}
+              aria-valuenow={currentStep}
+              aria-valuetext={`Paso ${currentStep} de 5: ${title}`}
+            >
+              {[1, 2, 3, 4, 5].map((number) => (
+                <span
+                  key={number}
+                  className={
+                    number <= currentStep
+                      ? styles.activeSegment
+                      : undefined
+                  }
+                />
+              ))}
+            </div>
+          )}
         </header>
 
         {step === "details" && (
@@ -154,7 +157,10 @@ export function BusinessOnboarding() {
           <BusinessLocationForm
             initialValues={location}
             onContinue={handleLocationContinue}
-            onBack={() => setStep("categories")}
+            onBack={(values) => {
+              setLocation(values);
+              setStep("categories");
+            }}
           />
         )}
 
@@ -178,25 +184,14 @@ export function BusinessOnboarding() {
         )}
 
         {step === "summary" && (
-          <section className={styles.form} aria-label="Resumen del registro">
-            <p>
-              {services.length} servicios y {staff.length} personas agregadas.
-            </p>
-
-            <footer className={styles.footer}>
-              <div
-                className={`${styles.footerContent} ${styles.footerWithBack}`}
-              >
-                <button
-                  className={styles.backButton}
-                  type="button"
-                  onClick={() => setStep("staff")}
-                >
-                  Atrás
-                </button>
-              </div>
-            </footer>
-          </section>
+          <BusinessSummary
+            details={details}
+            categories={categories}
+            location={location}
+            services={services}
+            staff={staff}
+            onBack={() => setStep("staff")}
+          />
         )}
       </main>
     </div>
