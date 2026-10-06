@@ -1,11 +1,18 @@
 export type BusinessCategory =
     |'salon'|'barbershop'|'spa'|'nails'|'massage'|'podiatry'|'physiotherapy';
 
+export interface BusinessImage {
+  src: string;
+  alt: string;
+}
+
 export interface Service {
   id: string;
   name: string;
   durationMinutes: number;
   priceMxn: number;
+  description?: string;
+  image?: BusinessImage;
 }
 
 export interface StaffMember {
@@ -35,6 +42,8 @@ export interface Business {
   city: string;
   address: string;
   description: string;
+  coverImage?: BusinessImage;
+  gallery?: BusinessImage[];
   openingHours: OpeningHours[];
   services: Service[];
   staff: StaffMember[];
@@ -42,7 +51,4 @@ export interface Business {
 
 export type BusinessDetails = Pick<Business, 'name'|'phone'|'description'>;
 
-export type BusinessLocation = Pick<
-    Business,
-    "city" | "address" | "openingHours"
->;
+export type BusinessLocation = Pick<Business, 'city'|'address'|'openingHours'>;
