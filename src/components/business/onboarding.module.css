@@ -95,10 +95,16 @@
   color: #767676;
 }
 
-.field input:focus-visible,
-.field textarea:focus-visible,
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
 .nextButton:focus-visible {
-  outline: 3px solid #b9420c;
+  outline: 3px solid var(--accent);
   outline-offset: 3px;
 }
 
@@ -192,24 +198,56 @@
 }
 
 .categoryOption span {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
-  min-height: 48px;
-  padding: 12px 16px;
-  color: #4b4b4b;
-  background: #e0e0e0;
-  border-radius: 12px;
-  text-align: center;
+  justify-content: flex-start;
+  gap: 14px;
+  min-height: 52px;
+  padding: 12px 20px;
+  color: #30343b;
+  background: #e9e9e9;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  text-align: left;
 }
 
-.categoryOption input:checked+span {
-  color: #ffffff;
+.categoryOption input:checked + span {
+  color: #30343b;
+  background: #fff0e8;
+  border-color: var(--onboarding-accent);
+  font-weight: 700;
+}
+
+.categoryOption input[type="checkbox"] + span::before {
+  content: "";
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  box-sizing: border-box;
+  border: 2px solid #a3a3a3;
+  border-radius: 50%;
+}
+
+.categoryOption input[type="checkbox"]:checked + span::before {
   background: var(--onboarding-accent);
+  border-color: var(--onboarding-accent);
 }
 
-.categoryOption input:focus-visible+span {
-  outline: 3px solid #b9420c;
+.categoryOption input[type="checkbox"]:checked + span::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 29px;
+  width: 7px;
+  height: 12px;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  transform: translateY(-60%) rotate(45deg);
+}
+
+.categoryOption input:focus-visible + span {
+  outline: 3px solid var(--accent);
   outline-offset: 3px;
 }
 
@@ -234,7 +272,7 @@
 }
 
 .backButton:focus-visible {
-  outline: 3px solid #b9420c;
+  outline: 3px solid var(--accent);
   outline-offset: 3px;
 }
 
@@ -322,7 +360,7 @@
 }
 
 .toggleInput:focus-visible+.toggleTrack {
-  outline: 3px solid #b9420c;
+  outline: 3px solid var(--accent);
   outline-offset: 4px;
 }
 
@@ -615,3 +653,17 @@
   color: var(--muted);
   font-size: 0.875rem;
 }
+
+.staffCardHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.formActionButton {
+  justify-self: center;
+  width: min(160px, calc((100% - 16px) / 2));
+  min-width: 0;
+}
+

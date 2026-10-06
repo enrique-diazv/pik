@@ -186,7 +186,7 @@ export function BusinessServicesForm({
 
       <button
         type="submit"
-        className={styles.nextButton}
+        className={`${styles.nextButton} ${styles.formActionButton}`}
         disabled={!canAddService}
       >
         Agregar

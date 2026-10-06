@@ -6,6 +6,7 @@ import type {
   BusinessDetails,
   BusinessLocation,
   Service,
+  StaffMember,
 } from "@/types/business";
 import { createDefaultOpeningHours } from "@/lib/opening-hours";
 import { BusinessDetailsForm } from "./business-details-form";
@@ -13,13 +14,15 @@ import { BusinessCategoriesForm } from "./business-categories-form";
 import { BusinessLocationForm } from "./business-location-form";
 import styles from "./onboarding.module.css";
 import { BusinessServicesForm } from "./business-services-form";
+import { BusinessStaffForm } from "./business-staff-form";
 
 type Step =
   | "details"
   | "categories"
   | "location"
   | "services"
-  | "staff";
+  | "staff"
+  | "summary";
 
 const steps = {
   details: {
@@ -42,6 +45,10 @@ const steps = {
     number: 5,
     title: "Staff",
   },
+  summary: {
+    number: 5,
+    title: "Resumen",
+  },
 };
 
 export function BusinessOnboarding() {
@@ -55,6 +62,7 @@ export function BusinessOnboarding() {
 
   const [categories, setCategories] = useState<BusinessCategory[]>([]);
   const [services, setServices] = useState<Service[]>([]);
+  const [staff, setStaff] = useState<StaffMember[]>([]);
   const [location, setLocation] = useState<BusinessLocation>(() => ({
     city: "",
     address: "",
@@ -148,8 +156,20 @@ export function BusinessOnboarding() {
         )}
 
         {step === "staff" && (
-          <section className={styles.form} aria-label="Equipo del negocio">
-            <p>Aún no agregaste personas a tu equipo.</p>
+          <BusinessStaffForm
+            services={services}
+            values={staff}
+            onChange={setStaff}
+            onContinue={() => setStep("summary")}
+            onBack={() => setStep("services")}
+          />
+        )}
+
+        {step === "summary" && (
+          <section className={styles.form} aria-label="Resumen del registro">
+            <p>
+              {services.length} servicios y {staff.length} personas agregadas.
+            </p>
 
             <footer className={styles.footer}>
               <div
@@ -158,7 +178,7 @@ export function BusinessOnboarding() {
                 <button
                   className={styles.backButton}
                   type="button"
-                  onClick={() => setStep("services")}
+                  onClick={() => setStep("staff")}
                 >
                   Atrás
                 </button>
