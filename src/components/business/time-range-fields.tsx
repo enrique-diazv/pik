@@ -1,16 +1,35 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  getTimeOptions,
+  minutesToTime,
+  timeToMinutes,
+} from "@/lib/time-picker";
 import type { TimeRange } from "@/types/business";
 import styles from "./onboarding.module.css";
 
-const hours = Array.from({ length: 24 }, (_, index) =>
-  String(index).padStart(2, "0")
-);
+function normalizeRange(range: TimeRange, minimumOpening: number): TimeRange {
+  if (minimumOpening > 1438) {
+    return range;
+  }
 
-const minutes = Array.from({ length: 60 }, (_, index) =>
-  String(index).padStart(2, "0")
-);
+  const opening = Math.min(
+    1438,
+    Math.max(minimumOpening, timeToMinutes(range.opensAt || "00:00"))
+  );
+
+  const closing = Math.min(
+    1439,
+    Math.max(opening, timeToMinutes(range.closesAt || "00:00"))
+  );
+
+  return {
+    ...range,
+    opensAt: minutesToTime(opening),
+    closesAt: minutesToTime(closing),
+  };
+}
 
 interface NumberColumnProps {
   label: string;
@@ -26,7 +45,11 @@ function NumberColumn({
   onSelect,
 }: NumberColumnProps) {
   const columnRef = useRef<HTMLDivElement>(null);
-  const initialValueRef = useRef(value);
+  const selectedValueRef = useRef(value);
+
+  useEffect(() => {
+    selectedValueRef.current = value;
+  }, [value]);
 
   useEffect(() => {
     const column = columnRef.current;
@@ -36,7 +59,7 @@ function NumberColumn({
       return;
     }
 
-    const index = options.indexOf(initialValueRef.current) + 1;
+    const index = Math.max(0, options.indexOf(selectedValueRef.current));
     column.scrollTop = index * button.offsetHeight;
   }, [options]);
 
@@ -48,10 +71,10 @@ function NumberColumn({
       return;
     }
 
-    const nextValue = index === 0 ? "" : options[index - 1];
+    const nextIndex = Math.max(0, Math.min(options.length - 1, index));
 
-    onSelect(nextValue);
-    column.scrollTop = index * button.offsetHeight;
+    onSelect(options[nextIndex]);
+    column.scrollTop = nextIndex * button.offsetHeight;
   }
 
   return (
@@ -71,15 +94,13 @@ function NumberColumn({
         const index = Math.max(
           0,
           Math.min(
-            options.length,
+            options.length - 1,
             Math.round(column.scrollTop / button.offsetHeight)
           )
         );
 
-        const nextValue = index === 0 ? "" : options[index - 1];
-
-        if (nextValue !== value) {
-          onSelect(nextValue);
+        if (options[index] !== value) {
+          onSelect(options[index]);
         }
       }}
       onKeyDown={(event) => {
@@ -89,35 +110,23 @@ function NumberColumn({
 
         event.preventDefault();
 
-        const column = event.currentTarget;
-        const button = column.querySelector<HTMLButtonElement>("button");
-
-        if (!button) {
-          return;
-        }
-
-        const currentIndex = Math.round(
-          column.scrollTop / button.offsetHeight
-        );
-
+        const currentIndex = Math.max(0, options.indexOf(value));
         const direction = event.key === "ArrowDown" ? 1 : -1;
 
-        selectIndex(
-          Math.max(0, Math.min(options.length, currentIndex + direction))
-        );
+        selectIndex(currentIndex + direction);
       }}
     >
-      {["", ...options].map((option, index) => (
+      {options.map((option, index) => (
         <button
-          key={option || "empty"}
+          key={option}
           type="button"
           className={styles.numberOption}
-          aria-label={`${label}: ${option || "sin seleccionar"}`}
+          aria-label={`${label}: ${option}`}
           aria-pressed={option === value}
           tabIndex={option === value ? 0 : -1}
           onClick={() => selectIndex(index)}
         >
-          {option || "—"}
+          {option}
         </button>
       ))}
     </div>
@@ -127,6 +136,7 @@ function NumberColumn({
 interface TimeRangeFieldsProps {
   idPrefix: string;
   value: TimeRange;
+  previousClosesAt?: string;
   onChange: (value: TimeRange) => void;
   onPickerChange: (rangeId: string, isPicking: boolean) => void;
 }
@@ -134,18 +144,67 @@ interface TimeRangeFieldsProps {
 export function TimeRangeFields({
   idPrefix,
   value,
+  previousClosesAt,
   onChange,
   onPickerChange,
 }: TimeRangeFieldsProps) {
   const [isPicking, setIsPicking] = useState(
     () => !value.opensAt || !value.closesAt
   );
-  const [draft, setDraft] = useState(value);
+
+  const minimumOpening = previousClosesAt
+    ? timeToMinutes(previousClosesAt)
+    : 0;
+
+  const [rawDraft, setDraft] = useState<TimeRange>(() => ({
+    ...value,
+    opensAt: value.opensAt || "00:00",
+    closesAt: value.closesAt || "00:00",
+  }));
+
+  const draft = normalizeRange(rawDraft, minimumOpening);
   const [error, setError] = useState("");
   const openingButtonRef = useRef<HTMLButtonElement>(null);
+  const pickerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isPicking) {
+      pickerRef.current?.scrollIntoView({
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "auto"
+          : "smooth",
+        block: "center",
+      });
+    }
+  }, [isPicking]);
 
   const [openingHour = "", openingMinute = ""] = draft.opensAt.split(":");
   const [closingHour = "", closingMinute = ""] = draft.closesAt.split(":");
+
+  const minimumClosing = Math.max(
+    minimumOpening,
+    timeToMinutes(draft.opensAt || "00:00")
+  );
+
+  const openingHours = useMemo(
+    () => getTimeOptions(minimumOpening, 1438, "00").hours,
+    [minimumOpening]
+  );
+
+  const openingMinutes = useMemo(
+    () => getTimeOptions(minimumOpening, 1438, openingHour).minutes,
+    [minimumOpening, openingHour]
+  );
+
+  const closingHours = useMemo(
+    () => getTimeOptions(minimumClosing, 1439, "00").hours,
+    [minimumClosing]
+  );
+
+  const closingMinutes = useMemo(
+    () => getTimeOptions(minimumClosing, 1439, closingHour).minutes,
+    [minimumClosing, closingHour]
+  );
 
   useEffect(() => {
     onPickerChange(idPrefix, isPicking);
@@ -161,20 +220,27 @@ export function TimeRangeFields({
     selectedValue: string
   ) {
     setDraft((current) => {
-      const [hour = "", minute = ""] = current[field].split(":");
+      const normalized = normalizeRange(current, minimumOpening);
+      const [hour, minute] = normalized[field].split(":");
 
-      return {
-        ...current,
+      const updated = {
+        ...normalized,
         [field]:
           part === "hour"
             ? `${selectedValue}:${minute}`
             : `${hour}:${selectedValue}`,
       };
+
+      return normalizeRange(updated, minimumOpening);
     });
   }
 
   function startPicking() {
-    setDraft(value);
+    setDraft({
+      ...value,
+      opensAt: value.opensAt || "00:00",
+      closesAt: value.closesAt || "00:00",
+    });
     setError("");
     setIsPicking(true);
   }
@@ -192,6 +258,16 @@ export function TimeRangeFields({
 
     if (draft.opensAt >= draft.closesAt) {
       setError("El cierre debe ser posterior a la apertura.");
+      return;
+    }
+
+    if (
+      previousClosesAt &&
+      timeToMinutes(draft.opensAt) <= timeToMinutes(previousClosesAt)
+    ) {
+      setError(
+        `La apertura debe ser posterior al cierre anterior: ${previousClosesAt}.`
+      );
       return;
     }
 
@@ -231,7 +307,11 @@ export function TimeRangeFields({
       </div>
 
       {isPicking && (
-        <div id={`${idPrefix}-picker`} className={styles.rangePicker}>
+        <div
+          ref={pickerRef}
+          id={`${idPrefix}-picker`}
+          className={styles.rangePicker}
+        >
           <div className={styles.pickerTimes}>
             <div>
               <p className={styles.pickerLabel}>Apertura</p>
@@ -239,7 +319,7 @@ export function TimeRangeFields({
               <div className={styles.timeColumns}>
                 <NumberColumn
                   label="Hora de apertura"
-                  options={hours}
+                  options={openingHours}
                   value={openingHour}
                   onSelect={(hour) =>
                     updateTimePart("opensAt", "hour", hour)
@@ -248,7 +328,7 @@ export function TimeRangeFields({
 
                 <NumberColumn
                   label="Minuto de apertura"
-                  options={minutes}
+                  options={openingMinutes}
                   value={openingMinute}
                   onSelect={(minute) =>
                     updateTimePart("opensAt", "minute", minute)
@@ -263,7 +343,7 @@ export function TimeRangeFields({
               <div className={styles.timeColumns}>
                 <NumberColumn
                   label="Hora de cierre"
-                  options={hours}
+                  options={closingHours}
                   value={closingHour}
                   onSelect={(hour) =>
                     updateTimePart("closesAt", "hour", hour)
@@ -272,7 +352,7 @@ export function TimeRangeFields({
 
                 <NumberColumn
                   label="Minuto de cierre"
-                  options={minutes}
+                  options={closingMinutes}
                   value={closingMinute}
                   onSelect={(minute) =>
                     updateTimePart("closesAt", "minute", minute)

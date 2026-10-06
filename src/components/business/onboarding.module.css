@@ -480,7 +480,7 @@
 
 .timeColumns {
   --wheel-row-height: 32px;
-  --wheel-height: 288px;
+  --wheel-height: 160px;
 
   position: relative;
   display: grid;
@@ -822,4 +822,8 @@
   margin: 0;
   font-weight: 700;
   overflow-wrap: anywhere;
+}
+
+.customDurationField input {
+  border-radius: 14px;
 }

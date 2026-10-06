@@ -217,6 +217,11 @@ export function OpeningHoursEditor({
                           key={`${rangeId}-${pickerSession}`}
                           idPrefix={rangeId}
                           value={range}
+                          previousClosesAt={
+                            index > 0
+                              ? day.ranges[index - 1].closesAt
+                              : undefined
+                          }
                           onChange={(updatedRange) =>
                             updateRange(day, index, updatedRange)
                           }

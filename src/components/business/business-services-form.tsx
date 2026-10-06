@@ -162,31 +162,28 @@ export function BusinessServicesForm({
               </span>
             </label>
           ))}
+
+          <div className={`${styles.field} ${styles.customDurationField}`}>
+            <input
+              id="service-custom-duration"
+              name="customDuration"
+              type="number"
+              inputMode="numeric"
+              aria-label="Duración personalizada en minutos"
+              placeholder="Escribe otra duración en minutos"
+              min={1}
+              max={1440}
+              step={1}
+              value={customDuration}
+              onChange={(event) => {
+                setCustomDuration(event.currentTarget.value);
+                setDuration(null);
+              }}
+              required={duration === null}
+            />
+          </div>
         </div>
       </fieldset>
-
-      <div className={styles.field}>
-        <label htmlFor="service-custom-duration">
-          Otra duración (minutos)
-        </label>
-
-        <input
-          id="service-custom-duration"
-          name="customDuration"
-          type="number"
-          inputMode="numeric"
-          placeholder="Escribe la duración en minutos"
-          min={1}
-          max={1440}
-          step={1}
-          value={customDuration}
-          onChange={(event) => {
-            setCustomDuration(event.currentTarget.value);
-            setDuration(null);
-          }}
-          required={duration === null}
-        />
-      </div>
 
       <div className={styles.field}>
         <label htmlFor="service-price">Precio (MXN)</label>
