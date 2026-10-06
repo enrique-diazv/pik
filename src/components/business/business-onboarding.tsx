@@ -4,12 +4,30 @@ import { useEffect, useRef, useState } from "react";
 import type {
   BusinessCategory,
   BusinessDetails,
+  BusinessLocation,
 } from "@/types/business";
+import { createDefaultOpeningHours } from "@/lib/opening-hours";
 import { BusinessDetailsForm } from "./business-details-form";
 import { BusinessCategoriesForm } from "./business-categories-form";
+import { BusinessLocationForm } from "./business-location-form";
 import styles from "./onboarding.module.css";
 
-type Step = "details" | "categories";
+type Step = "details" | "categories" | "location";
+
+const steps = {
+  details: {
+    number: 1,
+    title: "Datos del negocio",
+  },
+  categories: {
+    number: 2,
+    title: "Categorías",
+  },
+  location: {
+    number: 3,
+    title: "Ubicación y horarios",
+  },
+};
 
 export function BusinessOnboarding() {
   const [step, setStep] = useState<Step>("details");
@@ -21,10 +39,15 @@ export function BusinessOnboarding() {
   });
 
   const [categories, setCategories] = useState<BusinessCategory[]>([]);
-  const headingRef = useRef<HTMLHeadingElement>(null);
 
-  const currentStep = step === "details" ? 1 : 2;
-  const title = step === "details" ? "Datos del negocio" : "Categorías";
+  const [location, setLocation] = useState<BusinessLocation>(() => ({
+    city: "",
+    address: "",
+    openingHours: createDefaultOpeningHours(),
+  }));
+
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const { number: currentStep, title } = steps[step];
 
   useEffect(() => {
     headingRef.current?.focus();
@@ -83,6 +106,15 @@ export function BusinessOnboarding() {
             values={categories}
             onChange={setCategories}
             onBack={() => setStep("details")}
+            onContinue={() => setStep("location")}
+          />
+        )}
+
+        {step === "location" && (
+          <BusinessLocationForm
+            initialValues={location}
+            onContinue={setLocation}
+            onBack={() => setStep("categories")}
           />
         )}
       </main>

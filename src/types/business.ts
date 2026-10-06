@@ -1,11 +1,5 @@
 export type BusinessCategory =
-  | "salon"
-  | "barbershop"
-  | "spa"
-  | "nails"
-  | "massage"
-  | "podiatry"
-  | "physiotherapy";
+    |'salon'|'barbershop'|'spa'|'nails'|'massage'|'podiatry'|'physiotherapy';
 
 export interface Service {
   id: string;
@@ -20,12 +14,17 @@ export interface StaffMember {
   serviceIds: string[];
 }
 
-export interface OpeningHours {
-  /** ISO weekday: Monday = 1, Sunday = 7. */
-  weekday: number;
-  isOpen: boolean;
+export interface TimeRange {
+  id?: string;
   opensAt: string;
   closesAt: string;
+}
+
+export interface OpeningHours {
+  /** Lunes = 1, domingo = 7. */
+  weekday: number;
+  isOpen: boolean;
+  ranges: TimeRange[];
 }
 
 export interface Business {
@@ -33,6 +32,7 @@ export interface Business {
   name: string;
   categories: BusinessCategory[];
   phone: string;
+  city: string;
   address: string;
   description: string;
   openingHours: OpeningHours[];
@@ -40,7 +40,9 @@ export interface Business {
   staff: StaffMember[];
 }
 
-export type BusinessDetails = Pick<
-  Business,
-  "name" | "phone" | "description"
+export type BusinessDetails = Pick<Business, 'name'|'phone'|'description'>;
+
+export type BusinessLocation = Pick<
+    Business,
+    "city" | "address" | "openingHours"
 >;

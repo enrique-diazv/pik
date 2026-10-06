@@ -1,6 +1,6 @@
 .page {
   --onboarding-background: var(--background);
-  --onboarding-accent: #ff702a;
+  --onboarding-accent: var(--accent);
 
   min-height: 100dvh;
   padding: 40px 24px calc(120px + env(safe-area-inset-bottom, 0px));
@@ -68,6 +68,7 @@
 }
 
 .field input,
+.field select,
 .field textarea {
   width: 100%;
   min-width: 0;
@@ -138,7 +139,7 @@
   min-height: 48px;
   padding: 12px 24px;
   color: #ffffff;
-  background: #bd3b00;
+  background: var(--onboarding-accent);
   border: 0;
   border-radius: 999px;
   font-weight: 700;
@@ -146,7 +147,7 @@
 }
 
 .nextButton:hover {
-  background: #a33300;
+  background: var(--onboarding-accent);
 }
 
 @media (min-width: 720px) {
@@ -202,12 +203,12 @@
   text-align: center;
 }
 
-.categoryOption input:checked + span {
+.categoryOption input:checked+span {
   color: #ffffff;
-  background: #bd3b00;
+  background: var(--onboarding-accent);
 }
 
-.categoryOption input:focus-visible + span {
+.categoryOption input:focus-visible+span {
   outline: 3px solid #b9420c;
   outline-offset: 3px;
 }
@@ -237,8 +238,355 @@
   outline-offset: 3px;
 }
 
-.footerWithBack > button {
+.footerWithBack>button {
   flex: 1;
   min-width: 0;
   max-width: 160px;
+}
+
+.timeRange {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.hoursList {
+  display: grid;
+  gap: 16px;
+}
+
+.dayCard {
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 20px;
+}
+
+.dayToggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  font-weight: 700;
+  cursor: pointer;
+  position: relative
+}
+
+.dayRanges {
+  display: grid;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.closedDay {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.toggleInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  clip-path: inset(50%);
+}
+
+.toggleTrack {
+  position: relative;
+  flex-shrink: 0;
+  width: 52px;
+  height: 28px;
+  background: #cecece;
+  border-radius: 999px;
+  transition: background-color 150ms ease;
+}
+
+.toggleTrack::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 20px;
+  height: 20px;
+  background: #ffffff;
+  border-radius: 50%;
+  transition: transform 150ms ease;
+}
+
+.toggleInput:checked+.toggleTrack {
+  background: var(--onboarding-accent);
+}
+
+.toggleInput:checked+.toggleTrack::after {
+  transform: translateX(24px);
+}
+
+.toggleInput:focus-visible+.toggleTrack {
+  outline: 3px solid #b9420c;
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .toggleTrack,
+  .toggleTrack::after {
+    transition: none;
+  }
+}
+
+.daySummaryCard {
+  padding: 4px 16px;
+}
+
+.daySummaryRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.daySummaryRow .dayToggle {
+  flex-shrink: 0;
+  font-size: 0.875rem;
+}
+
+.hoursSummary {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px 12px;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-align: right;
+}
+
+.hoursLegend {
+  width: 100%;
+}
+
+.hoursHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.editHoursButton {
+  padding: 8px 0 8px 16px;
+  color: var(--onboarding-accent);
+  background: transparent;
+  border: 0;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.footerCentered {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.rangeEditor {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.rangeButtons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.timeButton {
+  min-width: 80px;
+  min-height: 44px;
+  padding: 8px 12px;
+  color: #4b4b4b;
+  background: #ffffff;
+  border: 1px solid #d9d9d9;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.rangeSeparator {
+  color: var(--muted);
+}
+
+.rangePicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.pickerTimes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.pickerLabel {
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.timeColumns {
+  --wheel-row-height: 32px;
+  --wheel-height: 288px;
+
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  isolation: isolate;
+}
+
+.timeColumns::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: var(--wheel-row-height);
+  transform: translateY(-50%);
+  background: #e0e0e0;
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.timeColumns::after {
+  content: ":";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #4b4b4b;
+  font-weight: 700;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.numberColumn {
+  position: relative;
+  z-index: 1;
+  height: var(--wheel-height);
+  padding: calc((var(--wheel-height) - var(--wheel-row-height)) / 2) 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
+  scroll-snap-type: y mandatory;
+
+  mask-image: linear-gradient(to bottom,
+      transparent 0%,
+      #000000 40%,
+      #000000 60%,
+      transparent 100%);
+
+  -webkit-mask-image: linear-gradient(to bottom,
+      transparent 0%,
+      #000000 40%,
+      #000000 60%,
+      transparent 100%);
+}
+
+.numberColumn::-webkit-scrollbar {
+  display: none;
+}
+
+.numberOption {
+  display: block;
+  width: 100%;
+  height: var(--wheel-row-height);
+  padding: 0;
+  color: #929292;
+  background: transparent;
+  border: 0;
+  font-weight: 700;
+  cursor: pointer;
+  scroll-snap-align: center;
+}
+
+.numberOption[aria-pressed="true"] {
+  color: #4b4b4b;
+  background: transparent;
+}
+
+.confirmTimeButton {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: var(--onboarding-accent);
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.rangeButtons[hidden] {
+  display: none;
+}
+
+.addRangeButton {
+  display: grid;
+  place-items: center;
+  justify-self: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: var(--onboarding-accent);
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.rangeRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  align-items: start;
+  gap: 8px;
+}
+
+.rangeRow .timeButton {
+  flex: 1;
+  min-width: 0;
+  max-width: 88px;
+}
+
+.deleteRangeButton {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: #ff3b30;
+  background: transparent;
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.pendingHoursMessage {
+  color: var(--muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.nextButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
