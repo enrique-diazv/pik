@@ -116,7 +116,7 @@ El selector muestra los próximos nueve días. Los horarios son compartidos por 
 
 ## Qué hice con IA
 
-Utilicé Codex como mentor y compañero de programación para descomponer el reto en pasos pequeños, proponer componentes y estilos, explicar conceptos de React y Next.js, revisar código y analizar errores de TypeScript, JSX y comportamiento.
+Utilicé Codex como mentor y compañero de programación para descomponer el reto en pasos pequeños, proponer componentes y estilos, revisar código y analizar errores de TypeScript, JSX y comportamiento.
 
 La IA también ayudó a plantear las reglas de disponibilidad, la validación de horarios, las interacciones del panel y la documentación. Incorporé las propuestas, ejecuté los comandos y comprobé manualmente los flujos, ajustando el resultado con capturas y pruebas en celular.
 
