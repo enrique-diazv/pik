@@ -10,7 +10,8 @@ import type {
 } from "@/types/business";
 import { weekdays } from "@/lib/opening-hours";
 import styles from "./onboarding.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { registerBusinessMock } from "@/data/mocks/business-registration";
 
 const categoryLabels: Record<BusinessCategory, string> = {
@@ -40,12 +41,20 @@ export function BusinessSummary({
   staff,
   onBack,
 }: BusinessSummaryProps) {
-
+  const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
   const [registeredBusiness, setRegisteredBusiness] =
     useState<Business | null>(null);
-
+  useEffect(() => {
+    if (registeredBusiness !== null) {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "instant",
+      });
+    }
+  }, [registeredBusiness]);
   async function handleConfirm() {
     if (isSaving) {
       return;
@@ -90,9 +99,9 @@ export function BusinessSummary({
             <button
               className={styles.backButton}
               type="button"
-              onClick={() => setRegisteredBusiness(null)}
+              onClick={() => router.push("/")}
             >
-              Volver al resumen
+              Cerrar el resumen
             </button>
           </div>
         </footer>
