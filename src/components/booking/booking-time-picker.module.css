@@ -1,0 +1,56 @@
+.fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0 0 16px;
+  border: 0;
+}
+
+.fieldset legend {
+  margin-bottom: 12px;
+  color: #555;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.timeGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.timeButton {
+  min-height: 36px;
+  padding: 8px 4px;
+  border: 0;
+  border-radius: 12px;
+  background: #f2efef;
+  color: #555;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.timeButton[aria-pressed="true"] {
+  background: var(--accent);
+  color: #fff;
+}
+
+.timeButton:disabled {
+  background: #e4e4e4;
+  color: #999;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+.timeButton:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.message {
+  margin: 0;
+  padding-bottom: 16px;
+  color: #777787;
+  font-size: 0.875rem;
+}

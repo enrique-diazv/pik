@@ -72,7 +72,36 @@ export const mockBusiness: Business = {
     },
   ],
   staff: [
-    {id: 'ana', name: 'Ana', serviceIds: ['corte', 'tratamiento']},
-    {id: 'sofia', name: 'Sofía', serviceIds: ['manicure', 'tratamiento']},
+    
+    {
+      id: 'ale',
+      name: 'Ale',
+      serviceIds: ['corte', 'tratamiento'],
+    },
+    {
+      id: 'sofia',
+      name: 'Sofía',
+      serviceIds: ['manicure', 'tratamiento'],
+    },
+    {
+      id: 'camila',
+      name: 'Camila',
+      serviceIds: ['corte', 'tratamiento'],
+    },
+    {
+      id: 'fernando',
+      name: 'Fernando',
+      serviceIds: ['manicure', 'tratamiento'],
+    },
+    {
+      id: 'valeria',
+      name: 'Valeria',
+      serviceIds: ['corte', 'tratamiento'],
+    },
+    {
+      id: 'andres',
+      name: 'Andres',
+      serviceIds: ['manicure', 'tratamiento'],
+    },
   ],
 };

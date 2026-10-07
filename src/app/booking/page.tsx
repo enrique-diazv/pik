@@ -62,7 +62,9 @@ export default function BookingPage() {
         >
           <BusinessProfileTabs
             services={mockBusiness.services}
+            staff={mockBusiness.staff}
             gallery={mockBusiness.gallery}
+            openingHours={mockBusiness.openingHours}
           />
         </section>
       </main>
