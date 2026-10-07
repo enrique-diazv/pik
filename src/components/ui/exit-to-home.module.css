@@ -1,0 +1,20 @@
+.link {
+  display: inline-flex;
+  flex: 0 0 44px;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: #626262;
+  border-radius: 50%;
+  text-decoration: none;
+}
+
+.link:hover {
+  background: rgb(0 0 0 / 4%);
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

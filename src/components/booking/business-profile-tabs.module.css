@@ -423,3 +423,8 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.bookingSummary .bookingTotal {
+  color: var(--accent);
+  font-weight: 600;
+}

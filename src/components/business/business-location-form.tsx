@@ -200,7 +200,10 @@ export function BusinessLocationForm({
             <button
               className={styles.nextButton}
               type="button"
-              onClick={saveHours}
+              onClick={(event) => {
+                event.preventDefault();
+                saveHours();
+              }}
               disabled={pendingRangeIds.length > 0}
             >
               Guardar

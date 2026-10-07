@@ -16,6 +16,7 @@ import styles from "./onboarding.module.css";
 import { BusinessServicesForm } from "./business-services-form";
 import { BusinessStaffForm } from "./business-staff-form";
 import { BusinessSummary } from "./business-summary";
+import { ExitToHome } from "@/components/ui/exit-to-home";
 
 type Step =
   | "details"
@@ -103,7 +104,10 @@ export function BusinessOnboarding() {
     <div className={styles.page}>
       <main className={styles.main}>
         <header className={styles.header}>
-          <h1>Tu negocio en PIK</h1>
+          <div className={styles.headingRow}>
+            <h1>Tu negocio en PIK</h1>
+            <ExitToHome />
+          </div>
 
           <h2
             ref={headingRef}

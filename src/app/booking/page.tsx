@@ -9,6 +9,7 @@ import {
   IconlyCall,
 } from "@/components/booking/booking-icons";
 import { FavoriteButton } from "@/components/booking/favorite-button";
+import { ExitToHome } from "@/components/ui/exit-to-home";
 
 export const metadata: Metadata = {
   title: "Reserva tu cita | PIK",
@@ -19,9 +20,13 @@ export default function BookingPage() {
     <div className={profileStyles.page}>
       <main className={styles.main}>
         <header className={profileStyles.header}>
-          <div className={profileStyles.nameRow}>
-            <h1 className={profileStyles.name}>{mockBusiness.name}</h1>
-            <FavoriteButton />
+          <div className={profileStyles.headingRow}>
+            <div className={profileStyles.nameRow}>
+              <h1 className={profileStyles.name}>{mockBusiness.name}</h1>
+              <FavoriteButton />
+            </div>
+
+            <ExitToHome />
           </div>
 
           <p className={profileStyles.contact}>

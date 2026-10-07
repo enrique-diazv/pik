@@ -90,3 +90,14 @@
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
+
+.headingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.headingRow .nameRow {
+  min-width: 0;
+}

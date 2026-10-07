@@ -382,8 +382,8 @@ export function BusinessProfileTabs({
                     {selectedSlot.startsAt} – {selectedSlot.endsAt}
                   </dd>
 
-                  <dt>Total</dt>
-                  <dd>
+                  <dt className={styles.bookingTotal}>Total</dt>
+                  <dd className={styles.bookingTotal}>
                     ${selectedService.priceMxn.toLocaleString("es-MX")} MXN
                   </dd>
                 </dl>
