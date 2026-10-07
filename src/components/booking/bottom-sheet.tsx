@@ -38,7 +38,6 @@ export function BottomSheet({
 
         return () => {
             document.body.style.overflow = previousOverflow;
-            dialog.close();
         };
     }, []);
 

@@ -884,3 +884,19 @@
 .headingRow h1 {
   margin: 0;
 }
+
+.emptyState {
+  margin: 0;
+  padding: 16px 20px;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: 16px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.addRangeButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

@@ -182,6 +182,13 @@ export function BusinessStaffForm({
         </button>
       )}
 
+      {values.length === 0 && (
+        <p className={styles.emptyState} role="status">
+          Todavía no has agregado personas. Agrega al menos una y asígnale los
+          servicios que atiende para continuar.
+        </p>
+      )}
+
       {values.length > 0 && (
         <ul className={styles.serviceList} aria-label="Personas agregadas">
           {values.map((person) => (

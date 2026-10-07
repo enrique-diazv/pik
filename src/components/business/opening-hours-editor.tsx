@@ -1,7 +1,7 @@
 "use client";
 
 import type { OpeningHours, TimeRange } from "@/types/business";
-import { weekdays } from "@/lib/opening-hours";
+import { canAddOpeningRange, weekdays } from "@/lib/opening-hours";
 import styles from "./onboarding.module.css";
 import { TimeRangeFields } from "./time-range-fields";
 import { useRef, useState } from "react";
@@ -76,7 +76,7 @@ export function OpeningHoursEditor({
   }
 
   function addRange(day: OpeningHours) {
-    if (hasPendingPickers) {
+    if (hasPendingPickers || !canAddOpeningRange(day.ranges)) {
       return;
     }
 
@@ -162,6 +162,7 @@ export function OpeningHoursEditor({
           const label = weekdays.find(
             (item) => item.weekday === day.weekday
           )?.label;
+          const canAddRange = canAddOpeningRange(day.ranges);
 
           return (
             <div
@@ -247,6 +248,12 @@ export function OpeningHoursEditor({
                   <button
                     type="button"
                     className={styles.addRangeButton}
+                    disabled={!hasPendingPickers && !canAddRange}
+                    aria-describedby={
+                      !hasPendingPickers && !canAddRange
+                        ? `range-limit-${day.weekday}`
+                        : undefined
+                    }
                     aria-label={
                       hasPendingPickers
                         ? "Cancelar edición de horarios abiertos"
@@ -262,6 +269,14 @@ export function OpeningHoursEditor({
                   >
                     {hasPendingPickers ? <IconlyCloseSquare /> : <IconlyPlus />}
                   </button>
+                  {!hasPendingPickers && !canAddRange && (
+                    <p
+                      id={`range-limit-${day.weekday}`}
+                      className={styles.pendingHoursMessage}
+                    >
+                      No queda tiempo para agregar otro horario en este día.
+                    </p>
+                  )}
                 </div>
               )}
             </div>

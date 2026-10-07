@@ -226,6 +226,12 @@ export function BusinessServicesForm({
         </button>
       )}
 
+      {values.length === 0 && (
+        <p className={styles.emptyState} role="status">
+          Todavía no has agregado servicios. Agrega al menos uno para continuar.
+        </p>
+      )}
+
       {values.length > 0 && (
         <ul className={styles.serviceList} aria-label="Servicios agregados">
           {values.map((service) => (
